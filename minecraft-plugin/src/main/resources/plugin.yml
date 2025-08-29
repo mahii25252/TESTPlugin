@@ -1,0 +1,6 @@
+name: AntiGrief
+version: ${project.version}
+main: com.example.antigrief.AntiGrief
+api-version: 1.20
+author: Jules
+description: A plugin to detect griefing activities by cooperating with a Python server.

@@ -1,0 +1,2 @@
+# The URL of the Python WebSocket server.
+websocket-url: "ws://localhost:8765"
