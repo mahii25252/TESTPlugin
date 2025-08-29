@@ -33,12 +33,23 @@ def create_features_and_labels(events_df, confirmed_griefers):
     logging.info("Engineering features for each player...")
 
     # Group by player to create a single feature set for each player
-    player_features = events_df.groupby('player_uuid').apply(lambda df: pd.Series({
-        'break_count': len(df[df['event_type'] == 'BlockBreak']),
-        'place_count': len(df[df['event_type'] == 'BlockPlace']),
-        'move_count': len(df[df['event_type'] == 'PlayerMove']),
-        'servers_count': df['server_id'].nunique()
-    })).reset_index()
+    def calculate_features(df):
+        event_counts = df['event_type'].value_counts()
+        features = {
+            'break_count': event_counts.get('BlockBreak', 0),
+            'place_count': event_counts.get('BlockPlace', 0),
+            'move_count': event_counts.get('PlayerMove', 0),
+            'interact_count': event_counts.get('PlayerInteract', 0),
+            'bucket_empty_count': event_counts.get('PlayerBucketEmpty', 0),
+            'chat_count': event_counts.get('PlayerChat', 0),
+            'inventory_click_count': event_counts.get('InventoryClick', 0),
+            'entity_damage_count': event_counts.get('EntityDamageByEntity', 0),
+            'tnt_prime_count': event_counts.get('TNTPrime', 0),
+            'servers_count': df['server_id'].nunique()
+        }
+        return pd.Series(features)
+
+    player_features = events_df.groupby('player_uuid').apply(calculate_features).reset_index()
 
     # Ensure the columns match what the predictor expects
     player_features = player_features[['player_uuid'] + FEATURE_COLUMNS]

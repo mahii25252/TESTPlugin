@@ -18,7 +18,13 @@ FEATURE_COLUMNS = [
     'break_count',
     'place_count',
     'move_count',
-    'servers_count'
+    'servers_count',
+    'interact_count',
+    'bucket_empty_count',
+    'chat_count',
+    'inventory_click_count',
+    'entity_damage_count',
+    'tnt_prime_count'
 ]
 
 def extract_features(df: pd.DataFrame) -> list:
@@ -29,14 +35,34 @@ def extract_features(df: pd.DataFrame) -> list:
     if df.empty:
         return [0] * len(FEATURE_COLUMNS)
 
-    # Calculate features
-    break_count = len(df[df['event_type'] == 'BlockBreak'])
-    place_count = len(df[df['event_type'] == 'BlockPlace'])
-    move_count = len(df[df['event_type'] == 'PlayerMove'])
+    # Calculate features by counting event types
+    event_counts = df['event_type'].value_counts()
+
+    break_count = event_counts.get('BlockBreak', 0)
+    place_count = event_counts.get('BlockPlace', 0)
+    move_count = event_counts.get('PlayerMove', 0)
+    interact_count = event_counts.get('PlayerInteract', 0)
+    bucket_empty_count = event_counts.get('PlayerBucketEmpty', 0)
+    chat_count = event_counts.get('PlayerChat', 0)
+    inventory_click_count = event_counts.get('InventoryClick', 0)
+    entity_damage_count = event_counts.get('EntityDamageByEntity', 0)
+    tnt_prime_count = event_counts.get('TNTPrime', 0)
+
     servers_count = df['server_id'].nunique()
 
-    # The feature vector
-    features = [break_count, place_count, move_count, servers_count]
+    # The feature vector - order must match FEATURE_COLUMNS
+    features = [
+        break_count,
+        place_count,
+        move_count,
+        servers_count,
+        interact_count,
+        bucket_empty_count,
+        chat_count,
+        inventory_click_count,
+        entity_damage_count,
+        tnt_prime_count
+    ]
     return features
 
 def load_model_and_predict(features: list) -> tuple[int, float]:
