@@ -102,7 +102,7 @@ def _load_action_model():
         logger.warning(f"Action prediction model not found at '{ACTION_MODEL_PATH}'. Next-action prediction is disabled.")
         # Set cache to an empty dict to avoid trying to load again
         _action_model_cache = {}
-        return None
+        return _action_model_cache
     except Exception as e:
         logger.error(f"Error loading action prediction model: {e}", exc_info=True)
         return None
