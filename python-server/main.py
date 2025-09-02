@@ -6,7 +6,6 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta, timezone
 from database import init_db, log_event, add_confirmed_griefer, update_block_state, DB_PATH
-from analyzer import analyze_event
 from ml_analyzer import extract_features, load_model_and_predict, predict_next_action
 
 # Configure logging
@@ -138,8 +137,6 @@ async def connection_handler(websocket, path):
                             new_block_type = "AIR" if event_type == "BlockBreak" else block_data.get("type", "UNKNOWN")
                             asyncio.create_task(update_block_state(server_id, world, x, y, z, new_block_type))
 
-                    # Pass all regular events to the real-time analyzer
-                    asyncio.create_task(analyze_event(event_data, websocket))
                     # Also, predict the next action
                     asyncio.create_task(predict_and_log_action(event_data))
 
