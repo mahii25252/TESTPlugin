@@ -1,0 +1,4 @@
+/app/minecraft-plugin/src/main/java/com/example/antigrief/AntiGrief.java
+/app/minecraft-plugin/src/main/java/com/example/antigrief/WebSocketClientManager.java
+/app/minecraft-plugin/src/main/java/com/example/antigrief/PlayerEventListener.java
+/app/minecraft-plugin/src/main/java/com/example/antigrief/BanListener.java
